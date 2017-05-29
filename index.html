@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <link rel="stylesheet" type="text/css" href="css/index.css" />
+
+  	<!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.css"  media="screen,projection"/>
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+ </head>
+  <body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#!" class="brand-logo">Bike SJC</a>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      
+      <ul class="side-nav" id="mobile-demo">
+       <header style="background: #11397d; color:#fff;">
+            <div class="row">
+                <div class="col s2 m2"><i class="fa fa-user-circle fa-2x" aria-hidden="true"></i></div>
+                <div class="col s10 col m10"><span>Olá, Bike Go!</span></div>
+            </div>
+        </header>
+        <li><a> <i class="fa fa-question-circle-o" aria-hidden="true"></i> Como Funciona</a></li>
+        <li><a> <i class="fa fa-bicycle" aria-hidden="true"></i> Sobre</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container">
+  		 <div class="divPage"  id="divLogin">
+            <div class="row">
+                <div class="col s12 col m12" align="center"><br>
+                    <img src="img/logo.png" class="img-flat" />
+                </div>
+                <div class="col s12 col m12 input-field">
+                   <i class="fa fa-user-o prefix" aria-hidden="true"></i>
+		       	   <input type="text" id="txtLogin" class="validate">
+		           <label for="txtLogin">Login</label>  
+				</div>
+				<div class="col s12 col m12 input-field">
+                    <i class="fa fa-unlock-alt prefix" aria-hidden="true"></i>
+					<input type="password" id="txtSenha" class="validate">
+					<label for="txtSenha">Senha</label>  
+                </div>
+                <div class="col s12 col m12 input-field" >
+                    <button type="button" onclick="entrar('divMaster');" class="waves-effect waves-light btn col s12">Entrar</button>
+                </div>
+                <div class="col s12 col m12 input-field" align="center" style="margin-top: 2em;">
+                    <p class="form-group">Esqueci minha senha</p>
+                </div>
+                <div class="col s12 m12 input-field" align="center">
+                	 <button type="button" class="waves-effect waves-light btn yellow">Não tenho conta</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="divPage" id="divMaster" style="display:none;">
+            <div class="row" style="margin-bottom: 2px;">
+			    <div class="col s12">
+			      <ul class="tabs">
+			        <li class="tab col s3"><a id="hfmapa" href="#mapaestacoes">Mapa</a></li>
+			        <li class="tab col s3"><a href="#estacoes">Estações</a></li>
+			        <li class="tab col s3"><a href="#passes">Passes</a></li>
+			      </ul>
+			    </div>
+			    <div id="estacoes" class="col s12">
+			    	<div class="card">
+				      <div  class="row">
+			      		<div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
+			      		<div class="col s10">
+			      			<span><b>Estação Santos</b></span><br>
+			      			<span>5 bikes 10 docas</span>
+			      		</div>
+				      </div>
+				    </div>
+				    <div class="card">
+				      <div  class="row">
+			      		<div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
+			      		<div class="col s10">
+			      			<span><b>Estação Ferreira</b></span><br>
+			      			<span>4 bikes 4 docas</span>
+			      		</div>
+				      </div>
+				    </div>
+				    <div class="card">
+				      <div  class="row">
+			      		<div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
+			      		<div class="col s10">
+			      			<span><b>Estação Guedes</b></span><br>
+			      			<span>5 bikes 7 docas</span>
+			      		</div>
+				      </div>
+				    </div>
+			    </div>
+			    <div id="passes" class="col s12">
+			    	 <div class="row">
+    <div class="col s12 m6">
+      <div class="card">
+        <div class="card-image">
+          <img src="img/pass1.jpg">
+          <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+        </div>
+        <div class="card-content">
+          <span class="card-title">Passe Diário</span>
+          <p>Por apenas R$6,00 você poderá andar por 30 minutos com a bicileta escolhida. Poderá alugar várias bicicletas durante o dia. Caso não devolver depois dos 30 minutos serão acrescentados 5 reais a cada 15 minutos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+            
+			    </div>
+  			</div>
+  		</div>
+  </div>
+  <div id="mapaestacoes"><div id="map" style="width:100%; height: 400px; display: none;"></div></div>
+  
+  <!-- Modal Structure -->
+  <div id="modal1" class="modal bottom-sheet">
+    <div class="modal-content" align="center">
+      <h4>Estação Santos</h4>
+      <div class="row">
+      <div class="col s6">
+      		<h4>5</h4>
+      		<h5>bikes</h5>
+      </div>
+      <div class="col s6">
+      		<h4>5</h4>
+      		<h5>docas</h5>
+      </div>
+      </div>
+      <div id="maparota" style="width:100%; height: 200px; display: none;">
+    </div>
+
+    <div class="modal-footer">
+    	<div id="footModalRotas"></div>
+     	<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">fechar</a>
+    </div>
+  </div>
+  </body>
+    <script type="text/javascript" src="cordova.js"></script> 
+    <!-- jQuery first, then tether, then Bootstrap Material Design JS. -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSND8hdK0WR_QXRFfqPPDstJz4OCMDI3w"></script>
+
+</html>
