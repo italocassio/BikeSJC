@@ -24,14 +24,25 @@ var app = {
 var login = "";
 var latlong = "";
 function acessar(div) {
-   
     $(".divPage").hide();
+	if (div != 'divMaster'){
+		$("#mapaestacoes").hide();
+	} else {
+		$('#hfmapa').click();
+		
+		$('ul.tabs').tabs('select_tab', 'hfmapa');
+		$("#mapaestacoes").show();
+	}
+	
+	$("#btnVoltarEstacao").hide();
     $("#" + div).show();        
 }
 
 function entrar(div) {
+	$(".divPage").hide();
     $("#divLogin").hide();
-    $("#map").show();
+	$("#btnVoltarEstacao").hide();
+    $("#mapaestacoes").show();
     $("#" + div).show();
     $("#hfmapa").click();
 
@@ -96,14 +107,20 @@ function entrar(div) {
     window.localStorage.setItem('login','teste');
     
 }
+//cria botao ver rotas
+function infoEstacao (latlng) {
+   $('#modal1').modal('open');
+   $("#footModalRotas").html(' <button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="verRota('+ latlng +');" >Ver Rotas</button>');
+}
 
+//exibe a rota no mapa do local atual com a estação
 function verRota(lat,long) {
-        $("#maparota").show();
+       
         var sjc = {lat: -23.1899556, lng: -45.86557};
         var directionsService = new google.maps.DirectionsService;
         var directionsDisplay = new google.maps.DirectionsRenderer;
        
-        var map = new google.maps.Map(document.getElementById('maparota'), {
+        var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 10,
             center: sjc
           });
@@ -121,17 +138,35 @@ function verRota(lat,long) {
         });
 
         directionsDisplay.setMap(map);
+		
+		$("#btnVoltarEstacao").show();
+		$('#modal1').modal('close');
         
 }
 
-function infoEstacao (latlng) {
-   $("#maparota").hide();
-   $('#modal1').modal('open');
-   $("#footModalRotas").html(' <button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="verRota('+ latlng +');" >Ver Rotas</button>');
+function alugarBike() {
+	swal({
+  title: "Deseja alugar esta bike?",
+  text: "Será descontado 1 passe diário.",
+  type: "warning",
+  showCancelButton: true,
+  confirmButtonColor: "#DD6B55",
+  confirmButtonText: "Sim",
+  cancelButtonText: "Não",
+  closeOnConfirm: false,
+  closeOnCancel: false
+},
+function(isConfirm){
+  if (isConfirm) {
+    swal("Sucesso!", "Sua bike está disponível!", "success");
+  } else {
+    swal("Cancelado!", "Ei.. vamos dá uma volta de bike!", "error");
+  }
+});
 }
 
-
 $(function() {
+  $("#divLogin").show();
   $('.button-collapse').sideNav({
       menuWidth: 300, // Default is 300
       edge: 'left', // Choose the horizontal origin
