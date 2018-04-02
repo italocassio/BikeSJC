@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html>
+<html lang="pt-br">
 <head>
     <meta charset="utf-8" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
-    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
-    
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />    
   	<!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
@@ -28,13 +27,18 @@
        <header style="background: #11397d; color:#fff;">
             <div class="row">
                 <div class="col s2 m2"><i class="fa fa-user-circle fa-2x" aria-hidden="true"></i></div>
-                <div class="col s10 col m10"><span id="spNome">Olá! </span></div>
+                <div class="col s10 col m10">
+                    <span id="spNome">Bem vindo ao Bike SJC! </span><br />
+                    <span id="spSaldo"></span>
+                </div>
             </div>
         </header>
-		<li onclick="acessar('divMaster')"><a><i class="fa fa-map-o" aria-hidden="true"></i> Mapa</a></li>
-		<li onclick="acessar('divPasses')"><a><i class="fa fa fa-ticket" aria-hidden="true"></i> Passes</a></li>
+		<li class="menuLogado" style="display:none;" onclick="entrar('divMaster','mapa')"><a><i class="fa fa-map-o" aria-hidden="true"></i> Mapa</a></li>
+		<li class="menuLogado" style="display:none;" onclick="acessar('divPasses')"><a><i class="fa fa-ticket" aria-hidden="true"></i> Passes</a></li>
+        <li class="menuLogado" style="display:none;" onclick="acessar('divCredito')"><a><i class="fa fa-money" aria-hidden="true"></i>  Comprar Créditos</a></li>
         <li><a> <i class="fa fa-question-circle-o" aria-hidden="true"></i> Como Funciona</a></li>
         <li><a> <i class="fa fa-bicycle" aria-hidden="true"></i> Sobre</a></li>
+        <li class="menuLogado" style="display:none;" onclick="sair()"><a><i class="fa fa-sign-out" aria-hidden="true"></i> Sair</a></li>
       </ul>
     </div>
   </nav>
@@ -46,12 +50,12 @@
                 </div>
                 <div class="col s12 col m12 input-field">
                    <i class="fa fa-user-o prefix" aria-hidden="true"></i>
-		       	   <input type="text" id="txtLogin" class="validate">
+		       	   <input type="text" id="txtLogin" class="validate" value="italo">
 		           <label for="txtLogin">Login</label>  
 				</div>
 				<div class="col s12 col m12 input-field">
                     <i class="fa fa-unlock-alt prefix" aria-hidden="true"></i>
-					<input type="password" id="txtSenha" class="validate">
+					<input type="password" id="txtSenha" class="validate" value="123">
 					<label for="txtSenha">Senha</label>  
                 </div>
                 <div class="col s12 col m12 input-field" >
@@ -116,92 +120,159 @@
         		</div>
         	</div>
         </div>
-		
-		<div class="divPage" id="divPasses">
-			    	 <div class="row">
-						<div class="col s12 m6">
-						  <div class="card">
-							<div class="card-image">
-							  <img src="img/pass1.jpg">
-							  <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
-							</div>
-							<div class="card-content">
-							  <span class="card-title">Passe Diário</span>
-							  <p>Por apenas R$6,00 você poderá andar por 30 minutos com a bicileta escolhida. Poderá alugar várias bicicletas durante o dia. Caso não devolver depois dos 30 minutos serão acrescentados 5 reais a cada 15 minutos.</p>
-							</div>
-						  </div>
-						</div>
-					</div>
-				</div>
+          <div class="divPage" id="divCredito">
+              <div class="row">
+                  <div class="col s12">
+                       <h4><span id="spSaldoAtu"></span></h4>
+                  </div>
+                  <div class="col s12">
+                      Digite a quantidade de créditos que deseja comprar.
+                  </div>
+                  <div class="input-field col s12">
+                      <input id="txtCredito" type="number" class="validate">
+                      <label for="txtCredito">Crédito - valor em reais</label>                      
+                  </div>
+                  <div class="input-field col s12">
+                      <button type="button" onclick="comprarCredito();" class="waves-effect waves-light btn  blue darken-1 btn-100">Comprar</button>
+                  </div>
+              </div>
+          </div>
+          <div class="divPage" id="divPasses">
+              
+              <div class="row">
+                  <div class="col s12" id="colVoucher">
+                      <div class="info-box bg-indigo">
+                          <div class="icon">
+                              <i class="fa fa fa-ticket fa-4x" aria-hidden="true" style="margin-top: 12px;"></i>
+                          </div>
+                          <div class="content">
+                              <div class="text" id="numVoucher">454585</div>
+                              <div class="number" id="dtVoucherExpirta">Válido até: 23/03/2018 18:43:00</div>
+                          </div>
+                      </div>
+                      <button type="button" onclick="showPasses();" class="waves-effect waves-light btn btn-100 amber lighten-1">Renovar Passe</button>
+                  </div>
+              </div>
 
-        <div class="divPage" id="divMaster" style="display:none;">
-            <div class="row" style="margin-bottom: 2px;">
-			    <div class="col s12">
-			      <ul class="tabs">
-			        <li class="tab col s3"><a id="hfmapa" href="#mapaestacoes">Mapa</a></li>
-			        <li class="tab col s3"><a href="#estacoes">Estações</a></li>
-					<li class="tab col s3"><a href="#bike">Bike</a></li>
-			      </ul>
-			    </div>
-			    <div id="estacoes" class="col s12">
-			    	<div class="card">
-				      <div  class="row">
-			      		<div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
-			      		<div class="col s10">
-			      			<span><b>Estação Santos</b></span><br>
-			      			<span>5 bikes 10 docas</span>
-			      		</div>
-				      </div>
-				    </div>
-				    <div class="card">
-				      <div  class="row">
-			      		<div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
-			      		<div class="col s10">
-			      			<span><b>Estação Ferreira</b></span><br>
-			      			<span>4 bikes 4 docas</span>
-			      		</div>
-				      </div>
-				    </div>
-				    <div class="card">
-				      <div  class="row">
-			      		<div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
-			      		<div class="col s10">
-			      			<span><b>Estação Guedes</b></span><br>
-			      			<span>5 bikes 7 docas</span>
-			      		</div>
-				      </div>
-				    </div>
-			    </div>
-				<div id="bike" class="col s12">
-					<div class="col s12">
-					<div class="card" style="overflow: hidden;">
-					  <div class="card-image waves-effect waves-block waves-light">
-						<img class="activator" src="img/bike.png">
-					  </div>
-					  <div class="card-content">
-						<span class="card-title activator grey-text text-darken-4">Pegue Sua Bike<i class="material-icons right">more_vert</i></span>
-						<p>você possui <b>3</b> passes diário(s) restante(s)</p>
-					  </div>
-					  <div class="card-reveal" style="display: none; transform: translateY(0px);">
-						<span class="card-title grey-text text-darken-4">Card Title<i class="material-icons right">close</i></span>
-						<p>Here is some more information about this product that is only revealed once clicked on.</p>
-					  </div>
-					  <div class="card-action">
-						<a href="#" onclick="alugarBike();">Alugar agora</a>
-					  </div>
-					</div>
-				  </div>
-				</div>
-			</div>
-  		</div>
-  </div>
+              <div class="row" id="rowPasses">                  
+                      <div class="col s12 m5" id="panelPasseAtivo">
+                          <div class="card-panel light-blue darken-3">
+                              <span class="white-text">
+                                 Nenhum passe ativo :( <br />
+                                 Adquire já o seu e vamos pedalar!
+                              </span>
+                          </div>
+                      </div>                  
+                  <div class="col s12">
+                      <div class="card" style="overflow: hidden;">
+                          <div class="card-image waves-effect waves-block waves-light">
+                              <img src="img/pass1.jpg">
+                          </div>
+                          <div class="card-content">
+                              <span class="card-title activator grey-text text-darken-4">Passe Diário - R$2,00<i class="material-icons right">more_vert</i></span>
+                              <a href="#" class="waves-effect waves-light btn  blue darken-1 btn-100" onclick="comprarPasse(1);">comprar</a>
+                          </div>
+                          <div class="card-reveal" style="display: none; transform: translateY(0px);">
+                              <span class="card-title grey-text text-darken-4">Passe Diário<i class="material-icons right">close</i></span>
+                              <p>Por apenas R$2,00 você poderá andar por 30 minutos com a bicileta quantos vezes quiser durante 24 horas. Caso não devolver depois dos 30 minutos serão acrescentados 5 reais a cada 15 minutos.</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col s12">
+                      <div class="card" style="overflow: hidden;">
+                          <div class="card-image waves-effect waves-block waves-light">
+                              <img src="img/pass-mensal.jpg">
+                          </div>
+                          <div class="card-content">
+                              <span class="card-title activator grey-text text-darken-4">Passe Mensal - R$20,00<i class="material-icons right">more_vert</i></span>
+                              <a href="#" class="waves-effect waves-light btn  blue darken-1 btn-100" onclick="comprarPasse(2);">comprar</a>
+                          </div>
+                          <div class="card-reveal" style="display: none; transform: translateY(0px);">
+                              <span class="card-title grey-text text-darken-4">Passe Mensal<i class="material-icons right">close</i></span>
+                              <p>Por apenas R$20,00 você poderá andar por 30 minutos com a bicileta quantas vezes quiser durante 1 mês. Poderá alugar várias bicicletas durante o dia. Caso não devolver depois dos 30 minutos serão acrescentados 5 reais a cada 15 minutos.</p>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="col s12">
+                      <div class="card" style="overflow: hidden;">
+                          <div class="card-image waves-effect waves-block waves-light">
+                              <img src="img/pass-anual.png">
+                          </div>
+                          <div class="card-content">
+                              <span class="card-title activator grey-text text-darken-4">Passe Anual - R$200,00<i class="material-icons right">more_vert</i></span>
+                              <a href="#" class="waves-effect waves-light btn  blue darken-1 btn-100" onclick="comprarPasse(3);">comprar</a>
+                          </div>
+                          <div class="card-reveal" style="display: none; transform: translateY(0px);">
+                              <span class="card-title grey-text text-darken-4">Passe Anual<i class="material-icons right">close</i></span>
+                              <p>Por apenas R$200,00 você poderá andar por 30 minutos com a bicileta quantas vezes quiser o durante 1 ano. Caso não devolver depois dos 30 minutos serão acrescentados 5 reais a cada 15 minutos.</p>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!--<div class="col s12 m6">
+                    <div class="card">
+                        <div class="card-image">
+                            <img src="img/pass1.jpg">
+                            <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title">Passe Mensal</span>
+                            <p>Por apenas R$30,00 você poderá andar por 30 minutos com a bicileta escolhida. Poderá alugar várias bicicletas durante 15 dias. Caso não devolver depois dos 30 minutos serão acrescentados 5 reais a cada 15 minutos.</p>
+                        </div>
+                    </div>
+                </div>-->
+              </div>
+          </div>
+
+          <div class="divPage" id="divMaster" style="display:none;">
+              <div class="row" style="margin-bottom: 2px;">
+                  <div class="col s12">
+                      <ul class="tabs">
+                          <li class="tab col s3"><a id="hfmapa" href="#mapaestacoes">Mapa</a></li>
+                          <li class="tab col s3"><a href="#estacoes">Estações</a></li>
+                          <li class="tab col s3"><a id="hfbike" href="#bike">Bikes</a></li>
+                      </ul>
+                  </div>
+                  <div id="estacoes" class="col s12">
+                      
+                  </div>
+                  <div id="bike" class="col s12">
+                      <div id="conteudobike"></div>
+                      <div class="row">
+                          <div class="col s12">
+                              <button type="button" onclick="carregarHistorico()" class="waves-effect waves-light btn blue darken-1 btn-100">
+                                  Exibir histórico
+                              </button>
+                          </div>
+                          <div id="loaderHistorico" class="spinner-layer spinner-red" style="display:none;">
+                              <div class="circle-clipper left">
+                                  <div class="circle"></div>
+                              </div><div class="gap-patch">
+                                  <div class="circle"></div>
+                              </div><div class="circle-clipper right">
+                                  <div class="circle"></div>
+                              </div>
+                          </div>
+                          <div class="col s12" id="divHistorico" style="margin-top:15px;">
+
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
   <div id="mapaestacoes" style="display:none;">
-		<div id="map" style="width:100%; height: 400px;"></div>
-		<div class="row" id="btnVoltarEstacao">
-			<div class="col s12 col m12 input-field" align="center">
-                    <button type="button" onclick="entrar('divMaster');" class="waves-effect yellow waves-light btn">Voltar</button>
-            </div>
-		</div>
+		<div id="map" style="width:100%; height: 400px;"></div>       
+  </div>
+  <div id="divMapaRota" style="display:none;">
+      <div id="mapRota" style="width:100%; height: 400px;"></div>     
+      <div id="right-panel" style="height:300px; overflow:scroll;"></div>
+      <div class="row" id="btnVoltarEstacao">
+          <div class="col s12 col m12 input-field" align="center">
+              <button type="button" onclick="voltarEstacao();" class="waves-effect yellow waves-light btn">Voltar</button>
+              <a id="openMaps" href="#" class="waves-effect waves-light btn  blue darken-1 ">ir para estação</a>
+          </div>
+      </div>
   </div>
   <div id="loader" style="display: none;position: fixed;
 			width: 100%;
@@ -219,34 +290,54 @@
 </div>
 
   
-  <!-- Modal Structure -->
-  <div id="modal1" class="modal bottom-sheet">
-    <div class="modal-content" align="center">
-      <h4>Estação Santos</h4>
-      <div class="row">
-      <div class="col s6">
-      		<h4>5</h4>
-      		<h5>bikes</h5>
-      </div>
-      <div class="col s6">
-      		<h4>5</h4>
-      		<h5>docas</h5>
-      </div>
-      </div>
-      
-    <div class="modal-footer">
-    	<div id="footModalRotas"></div>
-     	<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">fechar</a>
-    </div>
-  </div>
+  <!-- Modal Estação -->
+      <div id="modal1" class="modal bottom-sheet">
+          <div class="modal-content" align="center">
+              <h4 id="tituloEstacao">Estação</h4>
+              <div class="row">
+                  <div class="col s6">
+                      <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
+                      <h4 id="numBikes"></h4>
+                      <h5>bikes</h5>
+                  </div>
+                  <div class="col s6">
+                      <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
+                      <h4 id="numVagas"></h4>
+                      <h5>vagas</h5>
+                  </div>
+              </div>
 
+              <div class="modal-footer">
+                  <div id="footModalRotas"></div>                  
+                  <!--<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">fechar</a>-->                  
+              </div>
+          </div>
+      </div> 
+      
+      <!-- Modal Select -->
+      <div id="modal2" class="modal">
+          <div class="modal-content">              
+              <div class="row">
+                  <div class="input-field col s12">
+                      <p>Informe a estação que você está entregando a bike.</p>
+                      <select id="ddlEstacao">
+                          <option value="" disabled selected>Selecione</option>                          
+                      </select>                      
+                  </div>           
+              </div>
+
+              <div class="modal-footer">                  
+                  <button type="button" class="waves-effect waves-light btn btn-100  blue darken-1" onclick="finalizarEntregaBike()"><i class="fa fa-check-circle-o" aria-hidden="true"></i> Finalizar</button>
+              </div>
+          </div>
+      </div> 
   </body>
-   <!-- <script type="text/javascript" src="cordova.js"></script> 
-     jQuery first, then tether, then Bootstrap Material Design JS. -->
+    <script type="text/javascript" src="cordova.js"></script> 
+    <!-- jQuery first, then tether, then Bootstrap Material Design JS. -->
     <script src="js/jquery-3.2.1.min.js"></script>
-    <script type="text/javascript" src="js/materialize.min.js"></script>
+    <script type="text/javascript" src="js/materialize.min.js"></script>   
     <script type="text/javascript" src="js/index.js"></script>
 	<script type="text/javascript" src="js/sweetalert.min.js"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSND8hdK0WR_QXRFfqPPDstJz4OCMDI3w"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSND8hdK0WR_QXRFfqPPDstJz4OCMDI3w"></script>
 
 </html>
