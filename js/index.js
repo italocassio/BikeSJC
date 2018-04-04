@@ -47,7 +47,12 @@ var app = {
 };
 
 function onBackKeyDown() {
-    entrar('divMaster','mapa');
+    if (localStorage.getItem('usuario') == null) {
+        navigator.app.exitApp();
+    } else {
+        entrar('divMaster', 'mapa');
+    }
+            
 }
 
 function mapaEstacao() {
@@ -87,9 +92,10 @@ function entrar(div, tab) {
     $("#" + div).show();
     $("#hf" + tab).click();
     $(".menuLogado").show();
-    
-     retornaBikeUso();
-   
+
+    if (tab == "bike") {
+        retornaBikeUso();
+    }
     
     //resgata a localização do usuário
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -116,7 +122,8 @@ function entrar(div, tab) {
            }
     }, { enableHighAccuracy: true, maximumAge: 9999999 });         
        
-
+    
+        
 }
 
 function retornaEstacoes() {
@@ -206,16 +213,27 @@ function retornaEstacoes() {
 function infoEstacao(latlng, nome, id) {
     $("#numBikes, #numVagas").html("");
     $(".fa-spin").show();
+    $("#tituloEstacao").html(nome);
+    $('#modal1').modal('open');
+    $("#openMaps").attr("href", "geo:" + latlng);
+    var htmlFooter = "";
     $.ajax({
         type: "GET",
         url: baseURL + "/Estacao/info?id=" + id,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {           
-            var dados = JSON.parse(response);            
+            var dados = JSON.parse(response);
             $(".fa-spin").hide();
             $("#numBikes").html(dados.bicicletas);
             $("#numVagas").html(dados.vagas);
+           
+            if (dados.bicicletas > 0) {
+                htmlFooter += '<button type="button" class="waves-effect waves-light btn  blue darken-1" onclick="solicitarBike(' + id + ');">retirar bike</button> ';
+            }
+            htmlFooter += '<button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="verRota(' + latlng + ');" >Rota</button>';
+            $("#footModalRotas").html(htmlFooter);
+
         },
         failure: function (response) {
             swal('Oops', 'Algo deu errado.','error');
@@ -224,41 +242,46 @@ function infoEstacao(latlng, nome, id) {
             swal('Oops', 'Algo deu errado.', 'error');
         }
     });
+       
+}
 
-   $("#tituloEstacao").html(nome);
-   $('#modal1').modal('open');
-   $("#openMaps").attr("href", "geo:" + latlng);
-   if (dados.bicicletas != 0) {
-       $("#footModalRotas").html('<button type="button" class="waves-effect waves-light btn  blue darken-1" onclick="solicitarBike(' + id + ');">retirar bike</button>');
-   }  
-   $("#footModalRotas").append('<button class="modal-action modal-close waves-effect waves-green btn-flat" onclick="verRota('+ latlng +');" >Rota</button>');
+function esconderHistorico() {
+    $("#divHistorico").hide();
+    $('#btnEscondeHistorico').hide();
+    $('#btnCarregarHistorico').text('Exibir histórico').attr("disabled", false).show();   
 }
 
 function carregarHistorico() {
-    $("#loaderHistorico").show();
+      
     $.ajax({
         type: "GET",
         url: baseURL + "Usuario/historico",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: `usuario=${localStorage.getItem('usuId')}`,
+        beforeSend: function () {
+            $('#btnCarregarHistorico').text('carregando...').attr("disabled", true); 
+        },
         success: function (response) {           
             var d = response;
             var html = "";
-
+            $('#btnCarregarHistorico').hide();
+            $('#btnEscondeHistorico').show();
             d.forEach(item => {
                 html += `<div class="card">
                           <div class="row">
                               <div class="col s12" style="color:#0a61b9;">
-                                  <span><i class="fa fa-calendar" aria-hidden="true"></i> ${item.dataRetirada}</span><br>    
+                                   <div style="padding:5px;">
+                                   <span><i class="fa fa-calendar" aria-hidden="true"></i> ${item.dataRetirada}</span><br>    
                                    <span><i class="fa fa-map-marker" aria-hidden="true"></i> ${item.estacaoR} até ${item.estacaoE}</span><br>  
-                                   <span><i class="fa fa-clock-o" aria-hidden="true"></i> <b>${item.tempo}</b></span> 
+                                   <span><i class="fa fa-clock-o" aria-hidden="true"></i> <b>${item.tempo}</b></span>
+                                   </div>
                               </div>
                           </div>
                       </div>`;
             });
             $("#loaderHistorico").hide();
-            $("#divHistorico").html(html);
+            $("#divHistorico").html(html).show();
         },
         failure: function (response) {            
             $("#loaderHistorico").hide();
@@ -271,7 +294,7 @@ function carregarHistorico() {
     });
 }
 function solicitarBike(estacao) {
-
+    navigator.vibrate(1000);
     swal({
         title: 'Atenção!',
         text: 'Deseja retirar uma bike desta estação?',
@@ -306,6 +329,7 @@ function solicitarBike(estacao) {
                             },
                                 function (isConfirm) {
                                     if (isConfirm) {
+                                        $("#modal1").modal('close');
                                         entrar('divMaster', 'bike');                                        
                                     }
                                 }
@@ -351,6 +375,13 @@ function solicitarBike(estacao) {
 }
 
 function retornaBikeUso() {
+        
+
+    if (localStorage.getItem('planoIdAtivo') == null) {
+        retornaPasseAtivo();
+        return false;
+    }
+
 
     $.ajax({
         type: "GET",
@@ -394,7 +425,7 @@ function retornaBikeUso() {
             }
 
             $("#conteudobike").html(html);                       
-
+            $("#loader").hide();
         },
         failure: function (response) {
             $("#loader").hide();
@@ -409,6 +440,7 @@ function retornaBikeUso() {
 }
 
 function entregarBike() {
+    navigator.vibrate(1000);
     swal({
         title: 'Atenção!',
         text: 'Deseja finalizar seu passeio?',
@@ -446,7 +478,7 @@ function finalizarEntregaBike() {
             if (d.execucao = 1) {
                 $("#modal2").modal('close');
                 swal('Obrigado!', d.msg, 'success');
-                $("#conteudobike").html("<h4>Nenhum viagem em progresso.</h4>");
+                retornaBikeUso();
                 atualizaEstacoes();
             } else {
                 swal('Oops', d.msg, 'error');
@@ -516,7 +548,7 @@ function comprarPasse(passe) {
             msg = "Serão descontados 200 reais do seu saldo.";
             break;
     }
-
+    navigator.vibrate(1000);
     swal({
       title: titulo,
       text: msg,
@@ -612,7 +644,7 @@ function AcessarLogin () {
                 $("#spSaldo, #spSaldoAtu").html("Seu Saldo: R$ " + usuario.credito + ",00");                
                 Materialize.toast('Seja bem vindo ' + usuario.nome, 4000);
                 entrar('divMaster', 'mapa');
-                
+                retornaPasseAtivo();
             }
             
           },
@@ -820,13 +852,14 @@ function retornaPasseAtivo() {
                 $("#dtVoucherExpirta").html("Válido até: " + pa.pnaDtExpira);
                 $("#rowPasses").hide();
                 $("#colVoucher").show();
+                retornaBikeUso(); // verifica se temos uma bike em uso
             } else {
                 $("#rowPasses").show();
                 $("#colVoucher").hide();
             }
 
             $("#loader").hide();
-
+                        
         },
         failure: function (response) {
             $("#loader").hide();

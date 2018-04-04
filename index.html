@@ -61,7 +61,7 @@
                 <div class="col s12 col m12 input-field" >
                     <button type="button" onclick="AcessarLogin()" class="waves-effect waves-light btn col s12">Entrar</button>
                 </div>
-                <div class="col s12 col m12 input-field" align="center" style="margin-top: 2em;">
+                <div class="col s12 col m12 input-field" align="center">
                     <p class="form-group">Esqueci minha senha</p>
                 </div>
                 <div class="col s12 m12 input-field" align="center">
@@ -169,7 +169,7 @@
                               <img src="img/pass1.jpg">
                           </div>
                           <div class="card-content">
-                              <span class="card-title activator grey-text text-darken-4">Passe Diário - R$2,00<i class="material-icons right">more_vert</i></span>
+                              <span class="card-title activator grey-text text-darken-4">Passe Diário R$2,00<i class="material-icons right">more_vert</i></span>
                               <a href="#" class="waves-effect waves-light btn  blue darken-1 btn-100" onclick="comprarPasse(1);">comprar</a>
                           </div>
                           <div class="card-reveal" style="display: none; transform: translateY(0px);">
@@ -184,7 +184,7 @@
                               <img src="img/pass-mensal.jpg">
                           </div>
                           <div class="card-content">
-                              <span class="card-title activator grey-text text-darken-4">Passe Mensal - R$20,00<i class="material-icons right">more_vert</i></span>
+                              <span class="card-title activator grey-text text-darken-4">Passe Mensal R$20,00<i class="material-icons right">more_vert</i></span>
                               <a href="#" class="waves-effect waves-light btn  blue darken-1 btn-100" onclick="comprarPasse(2);">comprar</a>
                           </div>
                           <div class="card-reveal" style="display: none; transform: translateY(0px);">
@@ -199,7 +199,7 @@
                               <img src="img/pass-anual.png">
                           </div>
                           <div class="card-content">
-                              <span class="card-title activator grey-text text-darken-4">Passe Anual - R$200,00<i class="material-icons right">more_vert</i></span>
+                              <span class="card-title activator grey-text text-darken-4">Passe Anual R$200,00<i class="material-icons right">more_vert</i></span>
                               <a href="#" class="waves-effect waves-light btn  blue darken-1 btn-100" onclick="comprarPasse(3);">comprar</a>
                           </div>
                           <div class="card-reveal" style="display: none; transform: translateY(0px);">
@@ -240,19 +240,14 @@
                       <div id="conteudobike"></div>
                       <div class="row">
                           <div class="col s12">
-                              <button type="button" onclick="carregarHistorico()" class="waves-effect waves-light btn blue darken-1 btn-100">
+                              <button type="button" id="btnCarregarHistorico" onclick="carregarHistorico()" class="waves-effect waves-light btn blue darken-1 btn-100">
                                   Exibir histórico
                               </button>
+                              <button type="button" style="display:none;" id="btnEscondeHistorico" onclick="esconderHistorico()" class="waves-effect waves-light btn blue darken-1 btn-100">
+                                  Fechar histórico
+                              </button>
                           </div>
-                          <div id="loaderHistorico" class="spinner-layer spinner-red" style="display:none;">
-                              <div class="circle-clipper left">
-                                  <div class="circle"></div>
-                              </div><div class="gap-patch">
-                                  <div class="circle"></div>
-                              </div><div class="circle-clipper right">
-                                  <div class="circle"></div>
-                              </div>
-                          </div>
+                          
                           <div class="col s12" id="divHistorico" style="margin-top:15px;">
 
                           </div>
@@ -262,7 +257,7 @@
           </div>
       </div>
   <div id="mapaestacoes" style="display:none;">
-		<div id="map" style="width:100%; height: 400px;"></div>       
+		<div id="map" style="width:100%; height: 100%; position:absolute; max-height: 80%;"></div>       
   </div>
   <div id="divMapaRota" style="display:none;">
       <div id="mapRota" style="width:100%; height: 400px;"></div>     
@@ -321,7 +316,7 @@
                   <div class="input-field col s12">
                       <p>Informe a estação que você está entregando a bike.</p>
                       <select id="ddlEstacao">
-                          <option value="" disabled selected>Selecione</option>                          
+                          <option value="" disab   led selected>Selecione</option>                          
                       </select>                      
                   </div>           
               </div>
@@ -332,8 +327,8 @@
           </div>
       </div> 
   </body>
-    <script type="text/javascript" src="cordova.js"></script> 
-    <!-- jQuery first, then tether, then Bootstrap Material Design JS. -->
+   <sc ript type="text/javascript" src="cordova.js"></script> 
+   <!--   jQuery first, then tether, then Bootstrap Material Design JS. -->
     <script src="js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="js/materialize.min.js"></script>   
     <script type="text/javascript" src="js/index.js"></script>
