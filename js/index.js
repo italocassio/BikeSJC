@@ -1,8 +1,8 @@
 var map;
 var login = "";
 var latlong = "";
-var baseURL = "http://bikesjc.azurewebsites.net/";
-//var baseURL = "http://localhost:56568/";
+//var baseURL = "http://bikesjc.azurewebsites.net/";
+var baseURL = "http://localhost:56568/";
 var sjc = { lat: -23.1899556, lng: -45.86557 };
 var estacoes = [];
 
@@ -27,7 +27,7 @@ var app = {
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         document.addEventListener('backbutton', onBackKeyDown, false);
-        mapaEstacao();
+        //mapaEstacao();
         //login automático, se já logado antes
         if (localStorage.getItem('usuario') != null && localStorage.getItem('senha') != null) {
             $("#txtLogin").val(localStorage.getItem('usuario'));
@@ -56,11 +56,12 @@ function onBackKeyDown() {
 }
 
 function mapaEstacao() {
+
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 15,
         center: sjc
     });
-
+       
     estacoes = retornaEstacoes(); //obtemos as estações
 }
 
@@ -884,7 +885,7 @@ function sair() {
 }
 
 $(function() {
-     //mapaEstacao();
+     mapaEstacao();
 
   $("#divLogin").show();
   $('.button-collapse').sideNav({
