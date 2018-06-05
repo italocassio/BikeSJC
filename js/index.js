@@ -1,8 +1,8 @@
 var map;
 var login = "";
 var latlong = "";
-//var baseURL = "http://bikesjc.azurewebsites.net/";
-var baseURL = "http://localhost:56568/";
+var baseURL = "http://bikesjc.azurewebsites.net/";
+//var baseURL = "http://localhost:56568/";
 var sjc = { lat: -23.1899556, lng: -45.86557 };
 var estacoes = [];
 
@@ -11,46 +11,48 @@ var app = {
     initialize: function() {
         this.bindEvents();
     },
-    // Bind Event Listeners
-    //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'. 
     bindEvents: function() {
         document.addEventListener('offline', this.offLine, false);
-        document.addEventListener('deviceready', this.onDeviceReady, false);  
-        //document.addEventListener('online', this.onLine, false);
-       
+        document.addEventListener('deviceready', this.onDeviceReady, false);         
     },
     // deviceready Event Handler
-    //
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        document.addEventListener('backbutton', onBackKeyDown, false);
-        //mapaEstacao();
+    onDeviceReady: function() {        
+        //carrega as estações
+        mapaEstacao();
+
         //login automático, se já logado antes
         if (localStorage.getItem('usuario') != null && localStorage.getItem('senha') != null) {
             $("#txtLogin").val(localStorage.getItem('usuario'));
             $("#txtSenha").val(localStorage.getItem('senha'));
             AcessarLogin();            
         }
-
+        //função do botão voltar
+        document.addEventListener('backbutton', onBackKeyDown, false);
     },
 
     offLine: function () {
         swal('Atenção!','Você está offline! Verifique sua conexão.','error');        
     }
-    //,
-    //onLine: function () {
-    //    alert('Você está online!');
-    //}
 };
 
 function onBackKeyDown() {
     if (localStorage.getItem('usuario') == null) {
         navigator.app.exitApp();
     } else {
-        entrar('divMaster', 'mapa');
+        //se estiver na home ou no cadastro, sair do app
+        if ($('#divLogin').css('display') == 'block') {
+            navigator.app.exitApp();
+        } else if ($('#divComoFunciona').css('display') == 'block') {
+            acessar('divLogin');
+        }
+        else {
+            entrar('divMaster', 'mapa');
+        }
+        
     }
             
 }
@@ -61,8 +63,9 @@ function mapaEstacao() {
         zoom: 15,
         center: sjc
     });
-       
-    estacoes = retornaEstacoes(); //obtemos as estações
+
+    //estacoes = retornaEstacoes(); //obtemos as estações
+   
 }
 
 function atualizaEstacoes() {
@@ -101,8 +104,10 @@ function entrar(div, tab) {
     //resgata a localização do usuário
     navigator.geolocation.getCurrentPosition(function(position) {
               
-        latlong = {lat: position.coords.latitude, lng: position.coords.longitude};
-                                
+        latlong = { lat: position.coords.latitude, lng: position.coords.longitude };
+        var latlng = position.coords.latitude + "," + position.coords.longitude;
+        estacoes = retornaEstacoes(latlng); //obtemos as estações   
+        
         var marker = new google.maps.Marker({
           position: latlong,
           map: map
@@ -127,12 +132,16 @@ function entrar(div, tab) {
         
 }
 
-function retornaEstacoes() {
+function retornaEstacoes(latlng) {
     var arrEstacao = [];
+
+    if (latlng == null) {
+        latlng = latlong;
+    }
 
     $.ajax({
         type: "GET",
-        url: baseURL + "/Estacao/",
+        url: baseURL + "/Estacao?loc=" + latlng,
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
@@ -149,7 +158,7 @@ function retornaEstacoes() {
                         nome: estacao.est_nome,
                         id: estacao.est_id
                     }
-                //adiciona no array de  
+                //adiciona no array de  estacao
                 arrEstacao.push(modeloEstacao);
             });
 
@@ -167,16 +176,17 @@ function retornaEstacoes() {
                         infoEstacao(estacao.latlng, estacao.nome, estacao.id);
                     });
                 });
-            }, 1000);
+            }, 1200);
 
             //monta lista das estações
             var html = "";
             e.forEach(estacao => {
-                var latlng = "" + estacao.est_latitude + ", " + estacao.est_longitude + "";
-                html += `<div class="card" onclick="infoEstacao(\'${latlng}\', \'${estacao.est_nome}\', \'${estacao.est_id}\');">
+                var latlngEst = "" + estacao.est_latitude + ", " + estacao.est_longitude + "";
+                html += `<div class="card" onclick="infoEstacao(\'${latlngEst}\', \'${estacao.est_nome}\', \'${estacao.est_id}\');">
                           <div class="row">
                               <div class="col s2"><img src="img/estation.png" style="padding: 15px;"></div>
-                              <div class="col s10">
+                              <div class="col s2" style="padding-top: 12px;">${estacao.est_distancia}</div>
+                              <div class="col s8" style="padding-top: 12px;">
                                   <span><b>${estacao.est_nome}</b></span><br>
                                   <span>${estacao.est_num_bikes_atual} bike(s) - ${estacao.est_travas_disponiveis} vaga(s)</span>
                               </div>
@@ -210,6 +220,28 @@ function retornaEstacoes() {
     
 }
 
+function retDistEstacaoXUsuario(latlngEst) {
+    var distancia = "0";
+
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:56568/Estacao/distancia", //`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${latlong}&destinations=${latlngEst}&mode=bicycling&language=pt-BR&key=AIzaSyDSND8hdK0WR_QXRFfqPPDstJz4OCMDI3w `,
+        success: function (response) {            
+            var dados = response;
+            console.log('asd:' + dados.rows[0].elements[0].distance.text);
+            distancia = dados.rows[0].elements[0].distance.text;
+        },
+        failure: function (response) {
+            swal('Oops', 'Algo deu errado ao carregar histórico1.', 'error');
+        },
+        error: function (response) {
+            swal('Oops', 'Algo deu errado ao carregar histórico2.', 'error');
+        }
+    });
+
+    return distancia;
+
+}
 //exibe detalhes da estação e cria botao ver rotas
 function infoEstacao(latlng, nome, id) {
     $("#numBikes, #numVagas").html("");
@@ -294,6 +326,7 @@ function carregarHistorico() {
         }
     });
 }
+
 function solicitarBike(estacao) {
     navigator.vibrate(1000);
     swal({
@@ -571,6 +604,7 @@ function comprarPasse(passe) {
                 data: "{usuarioId:" + localStorage.getItem('usuId') +", planoId:" + passe + "}",
                 success: function (response) {
                     $("#loader").hide();
+                    retornaSaldo();
                     if (response == "ok") {
                         swal({
                             title: "Parabéns!",
@@ -823,7 +857,8 @@ function retornaSaldo() {
         dataType: "json",
         success: function (response) {
 
-            $("#spSaldo, #spSaldoAtu").html("Seu Saldo: R$ " + response + ",00");     
+            $("#spSaldo, #spSaldoAtu").html("Seu Saldo: R$ " + response + ",00");   
+            console.log('retorno do saldo: ' + response)
 
         },
         failure: function (response) {          
@@ -885,7 +920,7 @@ function sair() {
 }
 
 $(function() {
-     mapaEstacao();
+     //mapaEstacao();
 
   $("#divLogin").show();
   $('.button-collapse').sideNav({
@@ -895,7 +930,7 @@ $(function() {
       draggable: true // Choose whether you can drag to open on touch screens
     }
   );
- 
+
   $('.modal').modal();
   app.initialize();
 

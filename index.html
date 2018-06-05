@@ -36,8 +36,8 @@
 		<li class="menuLogado" style="display:none;" onclick="entrar('divMaster','mapa')"><a><i class="fa fa-map-o" aria-hidden="true"></i> Mapa</a></li>
 		<li class="menuLogado" style="display:none;" onclick="acessar('divPasses')"><a><i class="fa fa-ticket" aria-hidden="true"></i> Passes</a></li>
         <li class="menuLogado" style="display:none;" onclick="acessar('divCredito')"><a><i class="fa fa-money" aria-hidden="true"></i>  Comprar Créditos</a></li>
-        <li><a> <i class="fa fa-question-circle-o" aria-hidden="true"></i> Como Funciona</a></li>
-        <li><a> <i class="fa fa-bicycle" aria-hidden="true"></i> Sobre</a></li>
+        <li onclick="acessar('divComoFunciona')"><a> <i class="fa fa-question-circle-o" aria-hidden="true"></i> Como Funciona</a></li>
+        <!--<li><a> <i class="fa fa-bicycle" aria-hidden="true"></i> Sobre</a></li>-->
         <li class="menuLogado" style="display:none;" onclick="sair()"><a><i class="fa fa-sign-out" aria-hidden="true"></i> Sair</a></li>
       </ul>
     </div>
@@ -62,7 +62,7 @@
                     <button type="button" onclick="AcessarLogin()" class="waves-effect waves-light btn col s12">Entrar</button>
                 </div>
                 <div class="col s12 col m12 input-field" align="center">
-                    <p class="form-group">Esqueci minha senha</p>
+                    <!--<p class="form-group">Esqueci minha senha</p>-->
                 </div>
                 <div class="col s12 m12 input-field" align="center">
                 	 <button type="button" onclick="acessar('divCadastro')" class="waves-effect waves-light btn yellow">Não tenho conta</button>
@@ -120,6 +120,34 @@
         		</div>
         	</div>
         </div>
+      <div class="divPage" id="divComoFunciona">
+          <div class="row">
+              <div class="col s12 m12">
+                  <div class="card-panel blue darken-3">
+                      <h5 class="white-text">Passo 1</h5>
+                      <p class="white-text">Cadastre-se no aplicativo.</p>
+                  </div>
+              </div>
+              <div class="col s12 m12">
+                  <div class="card-panel cyan darken-1">
+                      <h5 class="white-text">Passo 2</h5>
+                      <p class="white-text">Compre créditos e troque por planos.</p>
+                  </div>
+              </div>
+              <div class="col s12 m12">
+                  <div class="card-panel teal darken-1">
+                      <h5 class="white-text">Passo 3</h5>
+                      <p class="white-text">Encontre uma estação e pegue sua bike!</p>
+                  </div>
+              </div>
+              <div class="col s12 m12">
+                  <div class="card-panel yellow darken-3">
+                      <h5 class="white-text">Passo 4</h5>
+                      <p class="white-text">Depois de pedalar um pouco, deixe a bike na estação mais próxima.</p>
+                  </div>
+              </div>
+          </div>
+      </div>
           <div class="divPage" id="divCredito">
               <div class="row">
                   <div class="col s12">
@@ -327,8 +355,8 @@
           </div>
       </div> 
   </body>
-     <!-- <script type="text/javascript" src="cordova.js"></script> 
-   jQuery first, then tether, then Bootstrap Material Design JS. -->
+     <script type="text/javascript" src="cordova.js"></script> 
+  <!--  jQuery first, then tether, then Bootstrap Material Design JS. -->
     <script src="js/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="js/materialize.min.js"></script>   
     <script type="text/javascript" src="js/index.js"></script>
